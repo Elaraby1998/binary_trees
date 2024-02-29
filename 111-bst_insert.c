@@ -1,49 +1,58 @@
 #include "binary_trees.h"
+
 /**
- * bst_insert - insert nodes in order to create a BST tree
- * @tree: tree to create with type BST
- * @value: value of node to insert
- * Return: BST tree
+ * bst_insert_recursion - a function that recursively traverses
+ * a Binary Search Tree to insert a new value
+ * @tree: a binary tree node
+ * @value: an integer to insert in new node
+ * Return: a pointer to new node, or NULL on failure
  */
+
+bst_t *bst_insert_recursion(bst_t *tree, int value)
+{
+	bst_t *new = NULL;
+
+	if (tree->n > value)
+	{
+		if (tree->left == NULL)
+		{
+			new = binary_tree_node(tree, value);
+			tree->left = new;
+			return (new);
+		}
+		return (bst_insert_recursion(tree->left, value));
+	}
+
+	if (tree->n < value)
+	{
+		if (tree->right == NULL)
+		{
+			new = binary_tree_node(tree, value);
+			tree->right = new;
+			return (new);
+		}
+		return (bst_insert_recursion(tree->right, value));
+	}
+	return (NULL);
+}
+
+/**
+ * bst_insert - a function that inserts a value in a Binary Search Tree
+ * @tree: a binary tree node passed by reference
+ * @value: an integer to insert in new node
+ * Return: the pointer to new node, or NULL on failure
+ */
+
 bst_t *bst_insert(bst_t **tree, int value)
 {
-	bst_t *new, *temp;
-	binary_tree_t *aux;
+	bst_t *new = NULL;
 
-	if (tree == NULL)
-		return (NULL);
-
-	if (*tree == NULL)
+	if (!tree || !(*tree))
 	{
-		aux = binary_tree_node((binary_tree_t *)(*tree), value);
-		new = (bst_t *)aux;
+		new = binary_tree_node(NULL, value);
 		*tree = new;
+		return (new);
 	}
-	else
-	{
-		temp = *tree;
-		if (value < temp->n)
-		{
-			if (temp->left)
-				new = bst_insert(&temp->left, value);
-			else
-			{
-				aux = binary_tree_node((binary_tree_t *)temp, value);
-				new = temp->left = (bst_t *)aux;
-			}
-		}
-		else if (value > temp->n)
-		{
-			if (temp->right)
-				new = bst_insert(&temp->right, value);
-			else
-			{
-				aux = binary_tree_node((binary_tree_t *)temp, value);
-				new = temp->right = aux;
-			}
-		}
-		else
-			return (NULL);
-	}
-	return (new);
+
+	return (bst_insert_recursion(*tree, value));
 }

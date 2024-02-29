@@ -1,46 +1,55 @@
 #include "binary_trees.h"
 
+#ifndef MAX_INT
+#define MAX_INT
+
 /**
- * binary_tree_height_b - Measures height of a binary tree for a bal tree
- * @tree: tree to go through
- * Return: the height
+ * max_int - a function that finds larger of two int values
+ * @a: a first value to compare
+ * @b: a second value to compare
+ * Return: the larger int value, or value of both if equal
  */
 
-size_t binary_tree_height_b(const binary_tree_t *tree)
+inline int max_int(int a, int b)
 {
-	size_t l = 0;
-	size_t r = 0;
+	return ((a > b) ? a : b);
+}
 
-	if (tree == NULL)
-	{
+#endif
+
+/**
+ * binary_tree_balance_height - a function that measures the height of a binary tree
+ * @tree: a root node from which to measure
+ * Return: the count of root and levels below, or 0 if `tree` is NULL
+ */
+
+int binary_tree_balance_height(const binary_tree_t *tree)
+{
+	if (!tree)
 		return (0);
-	}
-	else
-	{
-		if (tree)
-		{
-			l = tree->left ? 1 + binary_tree_height_b(tree->left) : 1;
-			r = tree->right ? 1 + binary_tree_height_b(tree->right) : 1;
-		}
-		return ((l > r) ? l : r);
-	}
+
+	if (!tree->left && !tree->right)
+		return (1);
+
+	return (1 + max_int(binary_tree_balance_height(tree->left),
+						binary_tree_balance_height(tree->right)));
 }
 
 /**
- * binary_tree_balance - Measures balance factor of a binary tree
- * @tree: tree to go through
- * Return: balanced factor
+ * binary_tree_balance - a function that measures the balance factor of a tree
+ * @tree: a root node from which to measure
+ * Return: the height of `tree` left , or 0 if `tree` is NULL
  */
 
 int binary_tree_balance(const binary_tree_t *tree)
 {
-	int right = 0, left = 0, total = 0;
+	int left_h, right_h;
 
-	if (tree)
-	{
-		left = ((int)binary_tree_height_b(tree->left));
-		right = ((int)binary_tree_height_b(tree->right));
-		total = left - right;
-	}
-	return (total);
+	if (!tree)
+		return (0);
+
+	left_h = binary_tree_balance_height(tree->left);
+	right_h = binary_tree_balance_height(tree->right);
+
+	return (left_h - right_h);
 }
